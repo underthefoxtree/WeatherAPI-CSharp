@@ -25,6 +25,22 @@ public class APITests
 	}
 
 	[Fact]
+	public async Task TestCurrentForecastNoAirQuality()
+	{
+		var client = new APIClient(apiKey, true);
+		var weather = await client.GetWeatherCurrentAsync("Berlin", false);
+
+		output.WriteLine(weather.ToString());
+
+		Assert.True(weather.Valid);
+		Assert.Equal(default, weather.AirQuality);
+		Assert.False(weather.AirQuality.Valid);
+		Assert.InRange(weather.TemperatureCelsius, -100, 100);
+		Assert.NotEmpty(weather.ConditionText);
+		Assert.InRange(weather.WindKph, 0, 200);
+	}
+
+	[Fact]
 	public async Task TestGetWeatherCurrentAsyncFail()
 	{
 		var client = new APIClient(apiKey, true);
