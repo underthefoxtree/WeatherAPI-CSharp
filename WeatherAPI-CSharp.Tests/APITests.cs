@@ -2,12 +2,9 @@ using Xunit.Abstractions;
 
 namespace WeatherAPI_CSharp.Tests;
 
-public class APITests
+public class APITests(ITestOutputHelper output)
 {
-	private readonly ITestOutputHelper output;
-	private const string apiKey = "YOUR-API-KEY";
-
-	public APITests(ITestOutputHelper output) => this.output = output;
+	private readonly ITestOutputHelper output = output;
 
 	[Fact]
 	public async Task TestGetWeatherCurrentAsync()
