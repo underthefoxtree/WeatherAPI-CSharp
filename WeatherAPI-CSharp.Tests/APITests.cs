@@ -19,6 +19,14 @@ public class APITests
 
 		Assert.True(weather.Valid);
 		Assert.True(weather.AirQuality.Valid);
+		Assert.NotEqual(default, weather.AirQuality.CO);
+		Assert.NotEqual(default, weather.AirQuality.O3);
+		Assert.NotEqual(default, weather.AirQuality.NO2);
+		Assert.NotEqual(default, weather.AirQuality.SO2);
+		Assert.NotEqual(default, weather.AirQuality.PM25);
+		Assert.NotEqual(default, weather.AirQuality.PM10);
+		Assert.NotEmpty(weather.AirQuality.UsIndexMeaning);
+		Assert.NotEmpty(weather.AirQuality.GbIndexMeaning);
 		Assert.InRange(weather.TemperatureCelsius, -100, 100);
 		Assert.NotEmpty(weather.ConditionText);
 		Assert.InRange(weather.WindKph, 0, 200);
