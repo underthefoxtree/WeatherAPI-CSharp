@@ -10,21 +10,15 @@ namespace WeatherAPI_CSharp;
 /// <summary>
 /// Client to make requests to weather api
 /// </summary>
-public class APIClient
+/// <remarks>
+/// Create APIClient with optional <paramref name="useHttps"/> parameter
+/// </remarks>
+/// <param name="apiKey">Your API key</param>
+/// <param name="useHttps"><c>true</c>: Use https, <c>false</c>: Use http</param>
+public class APIClient(string apiKey, bool useHttps = false)
 {
-	private readonly string _apiKey;
-	private readonly bool _useHttps;
-
-	/// <summary>
-	/// Create APIClient with optional <paramref name="useHttps"/> parameter
-	/// </summary>
-	/// <param name="apiKey">Your API key</param>
-	/// <param name="useHttps"><c>true</c>: Use https, <c>false</c>: Use http</param>
-	public APIClient(string apiKey, bool useHttps = false)
-	{
-		_apiKey = apiKey;
-		_useHttps = useHttps;
-	}
+	private readonly string _apiKey = apiKey;
+	private readonly bool _useHttps = useHttps;
 
 	/// <summary>
 	/// Get Current weather at <paramref name="query" /> location
@@ -42,10 +36,7 @@ public class APIClient
 		try
 		{
 			var jsonResponse = await client.GetStringAsync(uri);
-			dynamic jsonData = JsonConvert.DeserializeObject(jsonResponse)!;
-			if (jsonData is null)
-				throw new NullReferenceException();
-
+			dynamic jsonData = JsonConvert.DeserializeObject(jsonResponse)! ?? throw new NullReferenceException();
 			return new Forecast(jsonData.current, getAirData);
 		}
 		catch (HttpRequestException e)
@@ -78,11 +69,7 @@ public class APIClient
 		try
 		{
 			var jsonResponse = await client.GetStringAsync(uri);
-			dynamic jsonData = JsonConvert.DeserializeObject(jsonResponse)!;
-
-			if (jsonData is null)
-				throw new NullReferenceException();
-
+			dynamic jsonData = JsonConvert.DeserializeObject(jsonResponse)! ?? throw new NullReferenceException();
 			var forecasts = new ForecastDaily[days];
 			var index = 0;
 
@@ -104,7 +91,7 @@ public class APIClient
 				HttpStatusCode.NotFound => "Error 404 - Not Found.",
 				_ => $"Error {e.StatusCode}"
 			});
-			return new ForecastDaily[] { default };
+			return [default];
 		}
 	}
 
@@ -124,11 +111,7 @@ public class APIClient
 		try
 		{
 			var jsonResponse = await client.GetStringAsync(uri);
-			dynamic jsonData = JsonConvert.DeserializeObject(jsonResponse)!;
-
-			if (jsonData is null)
-				throw new NullReferenceException();
-
+			dynamic jsonData = JsonConvert.DeserializeObject(jsonResponse)! ?? throw new NullReferenceException();
 			var forecasts = new ForecastHourly[hours];
 			var index = 0;
 
@@ -155,7 +138,7 @@ public class APIClient
 				HttpStatusCode.NotFound => "Error 404 - Not Found.",
 				_ => $"Error {e.StatusCode}"
 			});
-			return new ForecastHourly[] { default };
+			return [default];
 		}
 	}
 
@@ -172,11 +155,7 @@ public class APIClient
 		try
 		{
 			var jsonResponse = await client.GetStringAsync(uri);
-			dynamic jsonData = JsonConvert.DeserializeObject(jsonResponse)!;
-
-			if (jsonData is null)
-				throw new NullReferenceException();
-
+			dynamic jsonData = JsonConvert.DeserializeObject(jsonResponse)! ?? throw new NullReferenceException();
 			return new LocationData(jsonData);
 		}
 		catch (HttpRequestException e)
