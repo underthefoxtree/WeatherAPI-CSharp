@@ -1,5 +1,6 @@
 using System.Net;
 using Newtonsoft.Json;
+using WeatherAPI_CSharp.Utils;
 
 /// <summary>
 /// Holds all classes needed to make API requests
@@ -34,7 +35,7 @@ public class APIClient
 	/// <remarks>Returns default on http error. In this case, Forecast.Valid will be false.</remarks>
 	public async Task<Forecast> GetWeatherCurrentAsync(string query, bool getAirData = false)
 	{
-		var uri = new Uri($"{(_useHttps ? "https" : "http")}://api.weatherapi.com/v1/current.json?key={_apiKey}&q={query}&aqi={(getAirData ? "yes" : "no")}");
+		var uri = UrlConstructor.GetCurrentWeatherUri(_apiKey, _useHttps, query, getAirData);
 
 		using var client = new HttpClient();
 
@@ -70,7 +71,7 @@ public class APIClient
 	/// <remarks>Returns default on http error. In this case, ForecastDaily[0].Valid will be false.</remarks>
 	public async Task<ForecastDaily[]> GetWeatherForecastDailyAsync(string query, int days = 3)
 	{
-		var uri = new Uri($"{(_useHttps ? "https" : "http")}://api.weatherapi.com/v1/forecast.json?key={_apiKey}&q={query}&days={days}");
+		var uri = UrlConstructor.GetForecastWeatherUri(_apiKey, _useHttps, query, days, false);
 
 		using var client = new HttpClient();
 
@@ -116,7 +117,7 @@ public class APIClient
 	/// <remarks>Returns default on http error. In this case, ForecastHourly[0].Valid will be false.</remarks>
 	public async Task<ForecastHourly[]> GetWeatherForecastHourlyAsync(string query, int hours = 24)
 	{
-		var uri = new Uri($"{(_useHttps ? "https" : "http")}://api.weatherapi.com/v1/forecast.json?key={_apiKey}&q={query}&days={Math.Ceiling(hours / 24d)}");
+		var uri = UrlConstructor.GetForecastWeatherUri(_apiKey, _useHttps, query, (int)Math.Ceiling(hours / 24d), false);
 
 		using var client = new HttpClient();
 
@@ -164,7 +165,7 @@ public class APIClient
 	/// <returns><see cref="LocationData"/> object containing the location</returns>
 	public async Task<LocationData> GetLocationDataByIpAsync()
 	{
-		var uri = new Uri($"{(_useHttps ? "https" : "http")}://api.weatherapi.com/v1/ip.json?key={_apiKey}&q=auto:ip");
+		var uri = UrlConstructor.GetIpLocationUri(_apiKey, _useHttps);
 
 		using var client = new HttpClient();
 
